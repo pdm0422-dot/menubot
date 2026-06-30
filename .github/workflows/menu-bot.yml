@@ -1,0 +1,54 @@
+name: 식당 메뉴 카톡 발송
+
+on:
+  schedule:
+    # 08:50 KST = 23:50 UTC (전날)
+    - cron: '50 23 * * *'
+  workflow_dispatch:
+    inputs:
+      debug:
+        description: '디버그 모드로 실행 (스크린샷 저장)'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: write
+
+jobs:
+  send-menu:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 저장소 체크아웃
+        uses: actions/checkout@v4
+
+      - name: 파이썬 설치
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 패키지 설치
+        run: |
+          pip install -r requirements.txt
+          playwright install --with-deps chromium
+
+      - name: 메뉴 확인 및 카톡 발송
+        env:
+          KAKAO_REST_API_KEY: ${{ secrets.KAKAO_REST_API_KEY }}
+          KAKAO_REFRESH_TOKEN: ${{ secrets.KAKAO_REFRESH_TOKEN }}
+          DEBUG_MODE: ${{ github.event.inputs.debug == 'true' && '1' || '0' }}
+        run: python main.py
+
+      - name: 디버그 스크린샷 업로드
+        if: ${{ github.event.inputs.debug == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-screenshots
+          path: debug/
+
+      - name: 상태 파일(state.json) 저장
+        run: |
+          git config user.name "menu-bot"
+          git config user.email "menu-bot@users.noreply.github.com"
+          git add state.json
+          git diff --staged --quiet || git commit -m "상태 업데이트 [skip ci]"
+          git push
