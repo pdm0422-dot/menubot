@@ -1,0 +1,19 @@
+{
+  "restaurants": [
+    {
+      "id": "nh_seoultower",
+      "name": "밥플러스NH서울타워",
+      "url": "https://pf.kakao.com/_xnBcxdG/posts"
+    },
+    {
+      "id": "master_value",
+      "name": "밥플러스마스터밸류",
+      "url": "https://pf.kakao.com/_xlCnNG/posts"
+    },
+    {
+      "id": "woorim_blue9",
+      "name": "밥플러스우림블루나인",
+      "url": "https://pf.kakao.com/_jxaNlG/posts"
+    }
+  ]
+}
