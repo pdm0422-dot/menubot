@@ -19,6 +19,8 @@ def refresh_access_token(client_id: str, refresh_token: str) -> str:
         },
         timeout=15,
     )
+    if resp.status_code != 200:
+        print(f"[debug] 카카오 응답 status={resp.status_code} body={resp.text}")
     resp.raise_for_status()
     data = resp.json()
     return data["access_token"]
