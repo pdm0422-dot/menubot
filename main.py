@@ -38,7 +38,12 @@ def save_json(path, data):
 def main():
     client_id = os.environ["KAKAO_REST_API_KEY"]
     refresh_token = os.environ["KAKAO_REFRESH_TOKEN"]
+    if not client_id or not refresh_token:
+    print("[fatal] KAKAO_REST_API_KEY 또는 KAKAO_REFRESH_TOKEN 값이 비어있습니다. GitHub Secrets를 확인하세요.")
+        sys.exit(1)
 
+    print(f"[debug] client_id 길이={len(client_id)}, refresh_token 길이={len(refresh_token)}")
+    
     config = load_json(CONFIG_PATH, {"restaurants": []})
     state = load_json(STATE_PATH, {})
 
